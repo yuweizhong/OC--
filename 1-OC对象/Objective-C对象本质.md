@@ -65,7 +65,7 @@ struct objc_class {
     NSLog(@"Obj: sizeof %lu,instanceSize %lu,mallocSize %lu",sizeof(obj),class_getInstanceSize([NSObject class]),malloc_size(CFBridgingRetain(obj)));
 ```
 得到结果分别是sizeof 8,instanceSize 8,mallocSize 16;【默认64位架构讨论】 那么为什么这个对象在内存中实际被分配了16的大小呢？我们来看下OC的源码，源码地址 [https://opensource.apple.com/tarballs/objc4/](https://opensource.apple.com/tarballs/objc4/)
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/OC对象/OC_Object_pic1.png)
+![](https://github.com/yuweizhong/OC--/blob/master/1-OC%E5%AF%B9%E8%B1%A1/OC_Object_pic1.png)
 我们发现源码中有这么一段，默认分配最小内存就是16
 
 当然，还有其他的办法，比如内存查看工具、LLDB等等来验证以上说法:
@@ -74,13 +74,13 @@ struct objc_class {
 * View Memory
 
 调试模式，断电代码，po对象打印对象地址,Debug-ViewMenmory输入内存地址查看
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/OC对象/OC_Object_pic2.png)
+![](https://github.com/yuweizhong/OC--/blob/master/1-OC%E5%AF%B9%E8%B1%A1/OC_Object_pic2.png)
 从图中可以看到 后面的8个字节都是00，都是空的，实际只用到了前面的8个字节，这个也可以证明我们之前所说！
 
 * LLDB(常用的LLDB指令看这篇 [常用LLDB指令](...))
 
 通过x命令查看
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/OC对象/OC_Object_pic3.png)
+![](https://github.com/yuweizhong/OC--/blob/master/1-OC%E5%AF%B9%E8%B1%A1/OC_Object_pic3.png)
 
 **以上都是对NSOBject对象的分析，那么自定义对象呢？**
 For Example: 自定义Person对象
