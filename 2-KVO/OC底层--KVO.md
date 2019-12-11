@@ -30,17 +30,17 @@ KVO(即Key-Value Observing)，俗称键值监听，可用用来监听某个对�
     self.person2.name = @"dog";
     [self.person1 addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
 ```
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/2-KVO/kvo_pic_1.png)
+![](https://github.com/yuweizhong/OC--/blob/master/2-KVO/kvo_pic_1.png)
 
 我们可以看到person1 的isa指针指向的是 NSKVONotifying_Person，看到这里，嗯？上次说过实例对象的isa指针应该是指向对应类对象，讲道理应该是Person类的？？？person2 正常... 我们猜想，是不是苹果在中间做了什么？这个NSKVONotifying_Person 又是什么类呢？其次，我们知道修改属性值相当于调用了set方法修改成员变量，我们来看下添加监听后的set方法...
 
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/2-KVO/kvo_pic_2.png)
+![](https://github.com/yuweizhong/OC--/blob/master/2-KVO/kvo_pic_2.png)
 
 我们可看到 person2 对象的setName:方法还是调用了Person类的setName:方法，也可以看到在Person.m的第22行;再看person1，实现是调用了Foundation框架的C函数 _NSSetObjectValueAndNotify.
 
 由于是Foundation框架，我们无法查看其内部实现(感兴趣的可以去搜索下GNUStep，重新实现了cocoa库的OC源码，有一定参考价值)。所以，我们尝试在Person类中手动实现willChangeValueForKey:和didChangeValueForKey:者两个方法并打印，看看有什么信息可以窥探...
 
-![](/Users/yuweizhong/Desktop/DEMO/Blogs/2-KVO/kvo_pic_3.png)
+![](https://github.com/yuweizhong/OC--/blob/master/2-KVO/kvo_pic_3.png)
 
 敲黑板...Summary
 > 综上所述，我们可以发现当我们为一个对象添加监听者时，Runtime会动态生成类对象 NSKVONotifying_XXX(原来XXX的子类)，将原来实例对象的isa指针指向该类，该类内部实现了对应的setXxx:方法,该方法内部实现为Foundation框架的_NSSetObjectValueAndNotify方法(根据属性类型方法名不同int bool or other...)
